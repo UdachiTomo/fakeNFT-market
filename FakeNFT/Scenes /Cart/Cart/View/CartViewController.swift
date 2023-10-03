@@ -2,28 +2,28 @@ import UIKit
 import ProgressHUD
 
 final class CartViewController: UIViewController {
-    
+
     enum Route: String {
         case pay
         case paymentChoice
         case purchasResult
     }
-    
+
     private let viewModel: CartViewModelProtocol
     var model: NFTModel?
     private var indexDelete: Int?
     var router: CartRouter
-    
+
     init(viewModel: CartViewModelProtocol = CartViewModel(), router: CartRouter = DefaultCartRouter()) {
         self.viewModel = viewModel
         self.router = router
         super.init(nibName: nil, bundle: nil)
     }
-    
+
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .systemBackground
@@ -45,7 +45,7 @@ final class CartViewController: UIViewController {
         tableView.delegate = self
         return tableView
     }()
-    
+
     private lazy var plugLabel: UILabel = {
         let plugLabel = UILabel()
         plugLabel.isHidden = true
@@ -54,14 +54,14 @@ final class CartViewController: UIViewController {
         plugLabel.textColor = .ypBlack
         return plugLabel
     }()
- 
+
     private lazy var sortButton: UIButton = {
         let sortButton = UIButton()
         sortButton.setImage(UIImage(named: "sortButton"), for: .normal)
         sortButton.addTarget(self, action: #selector(didTapSortButton), for: .touchUpInside)
         return sortButton
     }()
-    
+
     private lazy var buttonPaymentView: UIView = {
         let buttonPaymentView = UIView()
         buttonPaymentView.backgroundColor = .ypLightGrey
@@ -69,14 +69,14 @@ final class CartViewController: UIViewController {
         buttonPaymentView.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
         return buttonPaymentView
     }()
-    
+
     private lazy var countNFTLabel: UILabel = {
         let countNFTLabel = UILabel()
         countNFTLabel.text = "0 NFT"
-        
+
         return countNFTLabel
     }()
-    
+
     private lazy var totalCoastNFTLabel: UILabel = {
         let totalCoastNFTLabel = UILabel()
         totalCoastNFTLabel.text = "0,0"
@@ -84,7 +84,7 @@ final class CartViewController: UIViewController {
         totalCoastNFTLabel.font = UIFont.systemFont(ofSize: 17, weight: .bold)
         return totalCoastNFTLabel
     }()
-    
+
     private lazy var payButton: UIButton = {
         let payButton = UIButton()
         payButton.setTitle("К оплате", for: .normal)
@@ -95,14 +95,14 @@ final class CartViewController: UIViewController {
         payButton.addTarget(self, action: #selector(didTapPayButton), for: .touchUpInside)
         return payButton
     }()
-    
+
     private lazy var deleteView: UIVisualEffectView = {
         let deleteView = UIVisualEffectView(effect: UIBlurEffect(style: .regular))
         deleteView.frame = self.view.bounds
         deleteView.isHidden = true
         return deleteView
     }()
-    
+
     private lazy var deletingImage: UIImageView = {
         let deletingImage = UIImageView()
         deletingImage.image = UIImage(named: "mockImageNft")
@@ -111,7 +111,7 @@ final class CartViewController: UIViewController {
         deletingImage.isHidden = true
         return deletingImage
     }()
-    
+
     private lazy var deleteLabel: UILabel = {
         let deleteLabel = UILabel()
         deleteLabel.text = "Вы уверены, что хотите удалить объект из корзины?"
@@ -121,7 +121,7 @@ final class CartViewController: UIViewController {
         deleteLabel.isHidden = true
         return deleteLabel
     }()
-    
+
     private lazy var deleteButton: UIButton = {
         let deleteButton = UIButton()
         deleteButton.setTitle("Удалить", for: .normal)
@@ -131,9 +131,9 @@ final class CartViewController: UIViewController {
         deleteButton.isHidden = true
         deleteButton.addTarget(self, action: #selector(didTapDeleteButton), for: .touchUpInside)
         return deleteButton
-        
+
     }()
-    
+
     private lazy var returnButton: UIButton = {
         let returnButton = UIButton()
         returnButton.setTitle("Вернуться", for: .normal)
@@ -144,11 +144,11 @@ final class CartViewController: UIViewController {
         returnButton.addTarget(self, action: #selector(didTapReturnButton), for: .touchUpInside)
         return returnButton
     }()
-    
-    private func addViews(){
+
+    private func addViews() {
         [tableView, sortButton, buttonPaymentView, countNFTLabel, totalCoastNFTLabel, payButton, plugLabel].forEach(view.setupView(_:))
     }
-    
+
     private func setNavBar() {
         if let navigationBar = navigationController?.navigationBar {
             let sortButton = UIBarButtonItem(customView: sortButton)
@@ -160,7 +160,7 @@ final class CartViewController: UIViewController {
             navigationBar.topItem?.setRightBarButton(sortButton, animated: false)
         }
     }
-    
+
     private func setupEmptyLabel() {
         view.setupView(plugLabel)
         NSLayoutConstraint.activate([
@@ -168,13 +168,13 @@ final class CartViewController: UIViewController {
             plugLabel.centerYAnchor.constraint(equalTo: view.centerYAnchor)
         ])
     }
-    
-    private func setupButtonPaymentView(){
+
+    private func setupButtonPaymentView() {
         view.addSubview(buttonPaymentView)
         buttonPaymentView.addSubview(countNFTLabel)
         buttonPaymentView.addSubview(totalCoastNFTLabel)
         buttonPaymentView.addSubview(payButton)
-        
+
         NSLayoutConstraint.activate([
             buttonPaymentView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -83),
             buttonPaymentView.heightAnchor.constraint(equalToConstant: 76),
@@ -190,7 +190,7 @@ final class CartViewController: UIViewController {
             payButton.widthAnchor.constraint(equalToConstant: 240)
         ])
     }
-    
+
     private func setupTableView() {
         NSLayoutConstraint.activate([
             tableView.topAnchor.constraint(equalTo: view.topAnchor, constant: 108),
@@ -199,14 +199,14 @@ final class CartViewController: UIViewController {
             tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: 0)
         ])
     }
-    
+
     private func setupAllView() {
         setupEmptyLabel()
         setNavBar()
         setupTableView()
         setupButtonPaymentView()
     }
-    
+
     private func bind() {
         viewModel.nftsObservable.bind { [weak self] _ in
             guard let self else { return }
@@ -215,7 +215,7 @@ final class CartViewController: UIViewController {
             }
             self.tableView.reloadData()
         }
-        
+
         viewModel.isLoadingObservable.bind { [weak self] isLoading in
             guard let self else { return }
             if isLoading {
@@ -225,7 +225,7 @@ final class CartViewController: UIViewController {
                 self.tableView.reloadData()
             }
         }
-        
+
         viewModel.isCartEmptyObservable.bind { [weak self] isEmptyCart in
             guard let self else { return }
             if isEmptyCart {
@@ -235,7 +235,7 @@ final class CartViewController: UIViewController {
             }
         }
     }
-    
+
     private func showEmptyCart() {
         plugLabel.isHidden = false
         navigationController?.isNavigationBarHidden = true
@@ -245,7 +245,7 @@ final class CartViewController: UIViewController {
         countNFTLabel.isHidden = true
         totalCoastNFTLabel.isHidden = true
     }
-    
+
     private func showCart() {
         plugLabel.isHidden = true
         navigationController?.isNavigationBarHidden = false
@@ -255,18 +255,18 @@ final class CartViewController: UIViewController {
         countNFTLabel.isHidden = false
         totalCoastNFTLabel.isHidden = false
     }
-    
+
     private func configureView(model: NFTInfo) {
         if let formattedPrice = viewModel.formattedPrice.string(from: NSNumber(value: model.price)) {
             totalCoastNFTLabel.text = "\(formattedPrice) ETH"
         }
         countNFTLabel.text = "\(model.count) NFT"
     }
-    
+
     @objc private func didTapPayButton() {
         router.perform(.pay, from: self)
     }
-    
+
     @objc private func didTapReturnButton() {
         deleteView.removeFromSuperview()
         deleteLabel.removeFromSuperview()
@@ -275,7 +275,7 @@ final class CartViewController: UIViewController {
         navigationController?.isNavigationBarHidden = false
         tabBarController?.tabBar.isHidden = false
     }
-    
+
     @objc private func didTapDeleteButton() {
         deleteView.removeFromSuperview()
         deleteLabel.removeFromSuperview()
@@ -289,7 +289,7 @@ final class CartViewController: UIViewController {
             showEmptyCart()
         }
     }
-    
+
     @objc private func didTapSortButton() {
         let action = UIAlertController(title: nil, message: "Сортировка", preferredStyle: .actionSheet)
         let sortByPrice = UIAlertAction(title: "По цене", style: .default) { _ in
@@ -311,15 +311,15 @@ final class CartViewController: UIViewController {
 }
 
 extension CartViewController: UITableViewDelegate, UITableViewDataSource {
-    
+
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 140
     }
-    
+
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         viewModel.nfts.count
     }
-    
+
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: CartCell.identifier, for: indexPath) as? CartCell else {
             return UITableViewCell()
@@ -343,15 +343,15 @@ extension CartViewController: CartCellDelegate {
         navigationController?.isNavigationBarHidden = true
         tabBarController?.tabBar.isHidden = true
         deleteView.isUserInteractionEnabled = true
-        
+
         deletingImage.kf.setImage(with: viewModel.nfts[index].images.first)
-        
+
         view.setupView(deleteView)
         deleteView.contentView.setupView(deleteLabel)
         deleteView.contentView.setupView(deleteButton)
         deleteView.contentView.setupView(deletingImage)
         deleteView.contentView.setupView(returnButton)
-        
+
         NSLayoutConstraint.activate([
             deleteView.topAnchor.constraint(equalTo: view.topAnchor),
             deleteView.leadingAnchor.constraint(equalTo: view.leadingAnchor),

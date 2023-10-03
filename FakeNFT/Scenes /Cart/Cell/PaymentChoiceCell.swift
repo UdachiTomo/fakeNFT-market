@@ -3,35 +3,35 @@ import Kingfisher
 
 final class PaymentChoiceCell: UICollectionViewCell {
     static let identifier = "PaymentChoiceCell"
-    
+
     var currencyModel: CurrencyModel?
-    
+
     override init(frame: CGRect) {
         super.init(frame: frame)
         backgroundColor = .clear
         addView()
         applyConstraints()
     }
-    
+
     required init?(coder: NSCoder) {
         super.init(coder: coder)
     }
-    
+
     override func prepareForReuse() {
         super.prepareForReuse()
         deselectedCell()
     }
-    
+
     var imageURL: URL? {
         didSet {
             guard let url = imageURL else {
                 return payMethodImage.kf.cancelDownloadTask()
             }
-            
+
             payMethodImage.kf.setImage(with: url)
         }
     }
-    
+
     private lazy var collectionView: UIView = {
         let collectionView = UIView()
         collectionView.backgroundColor = .ypLightGrey
@@ -39,13 +39,13 @@ final class PaymentChoiceCell: UICollectionViewCell {
         collectionView.layer.masksToBounds = true
         return collectionView
     }()
-    
+
     private lazy var payMethodImage: UIImageView = {
         let payMethodImage = UIImageView()
         payMethodImage.image = UIImage(named: "bitcoin")
         return payMethodImage
     }()
-    
+
     private let payMethodBackgorundImage: UIView = {
         let view = UIView()
         view.layer.masksToBounds = true
@@ -53,33 +53,33 @@ final class PaymentChoiceCell: UICollectionViewCell {
         view.backgroundColor = .ypBlack
         return view
     }()
-    
+
     private lazy var firstLabel: UILabel = {
         let firstLabel = UILabel()
         firstLabel.textColor = .ypBlack
         firstLabel.font = .caption2
         return firstLabel
     }()
-    
+
     private lazy var secondLabel: UILabel = {
         let secondLabel = UILabel()
         secondLabel.textColor = .ypGreen
         secondLabel.font = .caption2
         return secondLabel
     }()
-    
+
     private let labelStackView: UIStackView = {
         let labelStackView = UIStackView()
         labelStackView.axis = .vertical
         return labelStackView
     }()
-    
+
     private func addView() {
-        [collectionView,payMethodBackgorundImage, payMethodImage, labelStackView].forEach(contentView.setupView(_:))
+        [collectionView, payMethodBackgorundImage, payMethodImage, labelStackView].forEach(contentView.setupView(_:))
         labelStackView.addArrangedSubview(firstLabel)
         labelStackView.addArrangedSubview(secondLabel)
     }
-    
+
     private func applyConstraints() {
         NSLayoutConstraint.activate([
             collectionView.topAnchor.constraint(equalTo: contentView.topAnchor),
@@ -99,21 +99,20 @@ final class PaymentChoiceCell: UICollectionViewCell {
             labelStackView.centerYAnchor.constraint(equalTo: payMethodBackgorundImage.centerYAnchor)
         ])
     }
-   
-    
+
     func configureCell(model: CurrencyModel) {
         currencyModel = model
         imageURL = model.image
         firstLabel.text = model.title
         secondLabel.text = model.name
     }
-    
+
     func selectedCell() {
         contentView.layer.cornerRadius = 12
         contentView.layer.borderWidth = 1.0
         contentView.layer.borderColor = UIColor.ypBlack?.cgColor
     }
-    
+
     func deselectedCell() {
         contentView.layer.borderWidth = 0.0
     }

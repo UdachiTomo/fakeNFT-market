@@ -12,28 +12,28 @@ protocol PaymentViewModelProtocol {
 }
 
 final class PaymentViewModel: PaymentViewModelProtocol {
-    
+
     @Observable
     private (set) var currencies: [CurrencyModel] = []
-    
+
     @Observable
     private (set) var paymentStatus: PaymentStatus = .notPay
-    
+
     @Observable
     private (set) var isLoading: Bool = false
-    
+
     private var selectedCurrency: CurrencyModel?
-    
+
     var currenciesObservable: Observable<[CurrencyModel]> { $currencies }
     var paymentStatusObservable: Observable<PaymentStatus> { $paymentStatus }
     var isLoadingObservable: Observable<Bool> { $isLoading }
-    
+
     private let cartLoadService: CartLoadServiceProtocol
-    
+
     init(model: CartLoadServiceProtocol = CartLoadService()) {
         self.cartLoadService = model
     }
-    
+
     func didLoad() {
             isLoading = true
             cartLoadService.fetchCurrencies { [weak self] result in
@@ -50,13 +50,13 @@ final class PaymentViewModel: PaymentViewModelProtocol {
                        }
                 }
             }
-        isLoading = false 
+        isLoading = false
     }
-    
+
     func selectCurrency(with id: String) {
-        self.selectedCurrency = currencies.first(where: { $0.id == id } )
+        self.selectedCurrency = currencies.first(where: { $0.id == id })
     }
-    
+
     func didTapPaymentButton() {
         isLoading = true
         guard let id = selectedCurrency?.id else { return }
@@ -64,7 +64,7 @@ final class PaymentViewModel: PaymentViewModelProtocol {
             guard let self else { return }
             DispatchQueue.main.async {
                 switch result {
-                case .success(_):
+                case .success:
                     self.paymentStatus = .pay
                 case let .failure(error):
                     print(error)

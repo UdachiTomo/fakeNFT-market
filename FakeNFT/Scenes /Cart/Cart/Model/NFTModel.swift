@@ -7,4 +7,3 @@ struct NFTModel: Codable {
     let rating: Int
     let images: [URL]
 }
-

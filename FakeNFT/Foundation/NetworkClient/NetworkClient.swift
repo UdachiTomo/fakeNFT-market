@@ -7,7 +7,6 @@ enum NetworkClientError: Error {
     case parsingError
 }
 
-
 protocol NetworkClient {
     @discardableResult
     func send(request: NetworkRequest,

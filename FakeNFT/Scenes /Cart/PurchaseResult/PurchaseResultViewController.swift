@@ -1,9 +1,9 @@
 import UIKit
 
 final class PurchaseResultViewController: UIViewController {
-    
+
     var completePurchase: Bool?
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .systemBackground
@@ -11,12 +11,12 @@ final class PurchaseResultViewController: UIViewController {
         applyConstraints()
         updateFinalResult()
     }
-    
+
     private lazy var image: UIImageView = {
         let image = UIImageView()
         return image
     }()
-    
+
     private lazy var label: UILabel = {
         let label = UILabel()
         label.font = .headline3
@@ -25,7 +25,7 @@ final class PurchaseResultViewController: UIViewController {
         label.numberOfLines = 0
         return label
     }()
-    
+
     private lazy var button: UIButton = {
         let button = UIButton()
         button.backgroundColor = .ypBlack
@@ -35,7 +35,7 @@ final class PurchaseResultViewController: UIViewController {
         button.addTarget(self, action: #selector(didTapButton), for: .touchUpInside)
         return button
     }()
-    
+
     private func updateFinalResult() {
         if completePurchase == true {
             label.text = "Успех! Оплата прошла, поздравляем с покупкой!"
@@ -47,11 +47,11 @@ final class PurchaseResultViewController: UIViewController {
             button.setTitle("Вернуться в каталог", for: .normal)
         }
     }
-    
+
     private func addView() {
         [image, label, button].forEach(view.setupView(_:))
     }
-    
+
     private func applyConstraints() {
         NSLayoutConstraint.activate([
             image.topAnchor.constraint(equalTo: view.topAnchor, constant: 196),
@@ -65,7 +65,7 @@ final class PurchaseResultViewController: UIViewController {
             button.heightAnchor.constraint(equalToConstant: 60)
         ])
     }
-    
+
     @objc private func didTapButton() {
         guard let firstScene = UIApplication.shared.connectedScenes.first as? UIWindowScene else { return }
         guard let firstWindow = firstScene.windows.first else { return }

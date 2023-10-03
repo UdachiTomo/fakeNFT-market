@@ -1,7 +1,7 @@
 import Foundation
 
 enum PaymentMethod: Int, CaseIterable {
-    
+
     case bitcoin
     case dogecoin
     case tether
@@ -10,7 +10,7 @@ enum PaymentMethod: Int, CaseIterable {
     case ethereum
     case cardano
     case shibaInu
-    
+
     var fullName: String {
         switch self {
         case .bitcoin: return "Bitcoin"
@@ -23,7 +23,7 @@ enum PaymentMethod: Int, CaseIterable {
         case .shibaInu: return "ShibaInu"
         }
     }
-    
+
     var shortName: String {
         switch self {
         case .bitcoin: return "BTC"
