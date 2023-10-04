@@ -1,3 +1,5 @@
+Скринкаст эпика "Корзина": https://disk.yandex.ru/i/bOE_smrzVxtrNg 
+
 # ТЗ мобильного приложения FakeNFT
 
 # Ссылки
